@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { GlobalStyles } from '../constants/styles';
+import InfoCard from '../components/InfoCard';
 
 const Starships = ({ route }) => {
-  const { character } = route.params; 
-
+  const { character } = route.params;
   const [starships, setStarships] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,12 +13,11 @@ const Starships = ({ route }) => {
     const fetchStarships = async () => {
       try {
         const starshipUrls = character.starships;
-        
         if (starshipUrls.length === 0) {
           setLoading(false);
           return;
         }
-        
+
         const starshipPromises = starshipUrls.map(async (url) => {
           const starshipResponse = await axios.get(url);
           return starshipResponse.data;
@@ -37,11 +36,11 @@ const Starships = ({ route }) => {
   }, [character]);
 
   const renderStarshipItem = ({ item }) => (
-    <View style={styles.starshipItem}>
-      <Text style={styles.name}>Nome: {item.name}</Text>
-      <Text style={styles.model}>Modelo: {item.model}</Text>
-      <Text style={styles.passengers}>Passageiros: {item.passengers}</Text>
-    </View>
+    <InfoCard
+      title={`Nome: ${item.name}`}
+      subtitle={`Modelo: ${item.model}`}
+      details={[`Passageiros: ${item.passengers}`]}
+    />
   );
 
   if (loading) {
@@ -82,24 +81,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     color: GlobalStyles.colors.primaryText,
-  },
-  starshipItem: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  model: {
-    fontSize: 16,
-    marginVertical: 5,
-  },
-  passengers: {
-    fontSize: 14,
-    color: '#666',
   },
 });
 

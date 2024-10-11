@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { GlobalStyles } from '../constants/styles';
+import InfoCard from '../components/InfoCard';
 
 const Movies = ({ route }) => {
-  const { character } = route.params; 
-
+  const { character } = route.params;
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const movieUrls = character.films; 
-
+        const movieUrls = character.films;
         if (movieUrls.length === 0) {
           setLoading(false);
           return;
@@ -37,11 +36,11 @@ const Movies = ({ route }) => {
   }, [character]);
 
   const renderMovieItem = ({ item }) => (
-    <View style={styles.movieItem}>
-      <Text style={styles.title}>Título: {item.title}</Text>
-      <Text style={styles.director}>Diretor: {item.director}</Text>
-      <Text style={styles.releaseDate}>Data de lançamento: {item.release_date}</Text>
-    </View>
+    <InfoCard
+      title={`Título: ${item.title}`}
+      subtitle={`Diretor: ${item.director}`}
+      details={[`Data de lançamento: ${item.release_date}`]}
+    />
   );
 
   if (loading) {
@@ -82,24 +81,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     color: GlobalStyles.colors.primaryText,
-  },
-  movieItem: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  director: {
-    fontSize: 16,
-    marginVertical: 5,
-  },
-  releaseDate: {
-    fontSize: 14,
-    color: '#666',
   },
 });
 
